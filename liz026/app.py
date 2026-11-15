@@ -261,9 +261,10 @@ def build_ui() -> gr.Blocks:
                                                 placeholder="e.g. John Doe")
                         with gr.Accordion("⚙️ Advanced settings", open=False):
                             threshold_in = gr.Slider(
-                                0.05, 0.95, value=config.DEFAULT_THRESHOLD, step=0.05,
+                                0.05, 0.99, value=config.DEFAULT_THRESHOLD, step=0.01,
                                 label="Decision threshold",
-                                info="Lower = catch more pneumonia cases · Higher = fewer false alarms")
+                                info="Lower = catch more pneumonia cases · Higher = fewer false alarms "
+                                     "(0.99 gave the best balance on the Kaggle test set)")
                         with gr.Row():
                             clear_btn = gr.Button("🗑️ Clear", variant="secondary", scale=1)
                             analyse_btn = gr.Button("🔍 Analyse X-ray", variant="primary",

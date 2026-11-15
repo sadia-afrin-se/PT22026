@@ -40,7 +40,7 @@ trusting the result.
 | **ℹ️ About tab** | Model architecture, how Grad-CAM works, what the threshold means, and limitations. |
 
 ### Extra controls and safety checks
-* **⚙️ Advanced settings → Decision threshold slider** (0.05–0.95). Lower it to catch more
+* **⚙️ Advanced settings → Decision threshold slider** (0.05–0.99, steps of 0.01). Lower it to catch more
   pneumonia cases (higher sensitivity); raise it to reduce false alarms (higher specificity).
   The result updates as soon as you release the slider.
 * **Input validation:** images smaller than 64 × 64 are rejected. Warnings are shown for
@@ -186,7 +186,7 @@ python scripts/evaluate.py --data path/to/chest_xray/test
 
 This writes the following to `results/`:
 * `metrics.json`: accuracy, precision, recall (sensitivity), specificity, F1, ROC-AUC
-* `threshold_sweep.csv`: the same metrics for thresholds 0.05 … 0.95
+* `threshold_sweep.csv`: the same metrics for thresholds 0.05 … 0.95, plus 0.98, 0.99, 0.995 and 0.999
 * `predictions.csv`: per-image probability
 * `confusion_matrix.png` and `roc_curve.png`
 

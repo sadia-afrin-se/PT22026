@@ -12,7 +12,7 @@ Usage:
 
 Outputs (in results/):
     metrics.json            accuracy, precision, recall, specificity, F1, ROC-AUC
-    threshold_sweep.csv     the same metrics for thresholds 0.05 ... 0.95
+    threshold_sweep.csv     the same metrics for thresholds 0.05 ... 0.95, 0.98 ... 0.999
     predictions.csv         per-image probability
     confusion_matrix.png    } only if matplotlib is installed
     roc_curve.png           }
@@ -65,7 +65,7 @@ def metrics_at(y, p, thr):
     rec = tp / (tp + fn) if tp + fn else 0.0
     spec = tn / (tn + fp) if tn + fp else 0.0
     f1 = 2 * prec * rec / (prec + rec) if prec + rec else 0.0
-    return {"threshold": round(thr, 2), "accuracy": (tp + tn) / len(y), "precision": prec,
+    return {"threshold": round(thr, 3), "accuracy": (tp + tn) / len(y), "precision": prec,
             "recall_sensitivity": rec, "specificity": spec, "f1": f1,
             "tp": tp, "tn": tn, "fp": fp, "fn": fn}
 
@@ -123,7 +123,8 @@ def main():
     (args.out / "metrics.json").write_text(json.dumps(m, indent=2))
 
     with open(args.out / "threshold_sweep.csv", "w", newline="") as f:
-        rows = [metrics_at(y, p, t) for t in np.arange(0.05, 0.96, 0.05)]
+        thresholds = list(np.round(np.arange(0.05, 0.96, 0.05), 2)) + [0.98, 0.99, 0.995, 0.999]
+        rows = [metrics_at(y, p, float(t)) for t in thresholds]
         w = csv.DictWriter(f, fieldnames=rows[0].keys()); w.writeheader(); w.writerows(rows)
     with open(args.out / "predictions.csv", "w", newline="") as f:
         w = csv.writer(f); w.writerow(["file", "true_label", "p_pneumonia"])
