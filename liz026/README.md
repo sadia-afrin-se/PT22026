@@ -134,6 +134,8 @@ liz026/
 │   └── screenshot.png      # screenshot used in this README
 ├── model/                  # model file is downloaded here (git-ignored)
 ├── reports/                # generated HTML reports (git-ignored)
+├── ChestCAM_Mid_Technical_Report.docx   # project report
+├── ChestCAM_Presentation.pptx          # presentation slides
 ├── requirements.txt
 └── .gitignore
 ```
