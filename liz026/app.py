@@ -251,7 +251,7 @@ def build_ui() -> gr.Blocks:
                         gr.HTML('<p class="step-title"><span class="num">1</span>Upload a chest X-ray</p>'
                                 '<p class="step-sub">Frontal (PA/AP) view, JPG or PNG. '
                                 'Analysis starts automatically.</p>')
-                        image_in = gr.Image(type="pil", image_mode="RGB", height=330,
+                        image_in = gr.Image(type="pil", image_mode=None, height=330,
                                             sources=["upload", "clipboard"], show_label=False,
                                             placeholder="⬆️ Drop an X-ray here or click to browse")
                         if examples:

@@ -21,6 +21,7 @@ MODEL_URL = (
 IMAGE_SIZE = (224, 224)            # MobileNetV2 input resolution
 CLASS_NAMES = ("Normal", "Pneumonia")
 DEFAULT_THRESHOLD = 0.5            # sigmoid output >= threshold -> Pneumonia
+UNCERTAIN_LOGIT_MARGIN = 0.6         # "close to the threshold" band (0.35-0.65 at t = 0.5)
 BACKBONE_LAYER = "mobilenetv2_1.00_224"   # nested MobileNetV2 sub-model
 LAST_CONV_LAYER = "out_relu"              # last conv activation (7x7x1280), used by Grad-CAM
 

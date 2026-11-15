@@ -4,6 +4,7 @@ Inference pipeline: validate -> preprocess -> CNN + Grad-CAM -> report.
 Kept separate from the UI so it can be reused by scripts and tests.
 """
 import logging
+import math
 import time
 from dataclasses import dataclass, field
 
@@ -34,6 +35,29 @@ class Prediction:
                 config.CLASS_NAMES[1]: self.prob_pneumonia}
 
 
+def _logit(p: float) -> float:
+    p = min(max(p, 1e-7), 1 - 1e-7)
+    return math.log(p / (1 - p))
+
+
+def _threshold_warnings(prob: float, threshold: float, label: str) -> list[str]:
+    """Warnings that stay correct for any decision threshold, not only 0.5."""
+    warnings = []
+    # Close to the decision boundary, measured on the logit scale so the band
+    # is 0.35-0.65 at the default threshold of 0.5 and narrower near 0 or 1.
+    if abs(_logit(prob) - _logit(threshold)) < config.UNCERTAIN_LOGIT_MARGIN:
+        warnings.append(f"The score P(Pneumonia) = {prob:.3f} is close to the decision "
+                        f"threshold of {threshold:.2f}. Treat this result with extra caution.")
+    # With a threshold other than 0.5 the label can go against the more likely class.
+    if label == config.CLASS_NAMES[0] and prob >= 0.5:
+        warnings.append(f"The model leans toward pneumonia (P = {prob:.3f}), but this is below "
+                        f"your threshold of {threshold:.2f}, so the result is Normal.")
+    elif label == config.CLASS_NAMES[1] and prob < 0.5:
+        warnings.append(f"The model leans toward normal (P(Pneumonia) = {prob:.3f}), but this is "
+                        f"above your threshold of {threshold:.2f}, so the result is Pneumonia.")
+    return warnings
+
+
 def analyse(image: Image.Image, threshold: float = config.DEFAULT_THRESHOLD) -> Prediction:
     """Run the full pipeline on one PIL image."""
     warnings = validate_image(image)          # may raise InvalidImageError
@@ -45,9 +69,7 @@ def analyse(image: Image.Image, threshold: float = config.DEFAULT_THRESHOLD) -> 
 
     label = config.CLASS_NAMES[1] if prob >= threshold else config.CLASS_NAMES[0]
     confidence = prob if label == config.CLASS_NAMES[1] else 1 - prob
-    if 0.35 < prob < 0.65:
-        warnings.append("The model is uncertain (score close to 0.5). "
-                        "Treat this result with extra caution.")
+    warnings += _threshold_warnings(prob, threshold, label)
 
     resized = prepare_display_image(image)
     heatmap = overlay_heatmap(resized, cam)

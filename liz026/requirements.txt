@@ -1,5 +1,5 @@
 # Web UI
-gradio>=5.0
+gradio>=6.0
 # Deep learning: Keras 3 running on the PyTorch backend
 # (TensorFlow has no wheels for Python 3.14+, PyTorch does)
 keras>=3.9

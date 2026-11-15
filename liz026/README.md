@@ -44,7 +44,11 @@ trusting the result.
   pneumonia cases (higher sensitivity); raise it to reduce false alarms (higher specificity).
   The result updates as soon as you release the slider.
 * **Input validation:** images smaller than 64 × 64 are rejected. Warnings are shown for
-  colour photos (probably not an X-ray), unusual aspect ratios, and uncertain scores (0.35–0.65).
+  colour photos (probably not an X-ray), unusual aspect ratios, scores close to the decision
+  threshold (0.35–0.65 at the default 0.5), and cases where a high or low threshold overrides
+  the way the model is leaning.
+* **16-bit images:** 16-bit grayscale PNGs (common for raw X-ray exports) are rescaled to 8-bit
+  before analysis instead of being clipped to white.
 * **Patient name** (optional) is printed on the report.
 * **Clear** button resets the whole page.
 

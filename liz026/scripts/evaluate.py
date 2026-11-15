@@ -76,7 +76,8 @@ def roc_auc(y, p):
     y_sorted = y[order]
     tpr = np.concatenate([[0], np.cumsum(y_sorted) / max(y.sum(), 1)])
     fpr = np.concatenate([[0], np.cumsum(1 - y_sorted) / max((1 - y).sum(), 1)])
-    return fpr, tpr, float(np.trapezoid(tpr, fpr))
+    trapezoid = getattr(np, "trapezoid", None) or np.trapz  # renamed in NumPy 2.0
+    return fpr, tpr, float(trapezoid(tpr, fpr))
 
 
 def save_plots(out_dir, m, fpr, tpr, auc):
