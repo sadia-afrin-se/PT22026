@@ -11,8 +11,8 @@ How it works (Selvaraju et al., 2017):
      (the score before the final sigmoid).
   3. Compute dz/dA. Average the gradient over the 7x7 grid -> one weight
      per channel (how important that channel is for "pneumonia").
-  4. Weighted sum of the channels, ReLU, normalise -> 7x7 heat-map,
-     upsampled to the image size and overlaid in colour.
+  4. Weighted sum of the channels, ReLU, normalize -> 7x7 heat-map,
+     upsampled to the image size and overlaid in color.
 
 For a "Normal" prediction we explain -z instead, so the map
 always highlights evidence for the predicted class.
@@ -91,7 +91,7 @@ def predict_with_gradcam(model, batch: np.ndarray, threshold: float = 0.5):
 
 
 def _jet(values: np.ndarray) -> np.ndarray:
-    """Tiny 'jet' colour-map (avoids a matplotlib dependency). values in [0,1]."""
+    """Tiny 'jet' color-map (avoids a matplotlib dependency). values in [0,1]."""
     v = np.clip(values, 0, 1)
     r = np.clip(1.5 - np.abs(4 * v - 3), 0, 1)
     g = np.clip(1.5 - np.abs(4 * v - 2), 0, 1)
@@ -105,9 +105,9 @@ def overlay_heatmap(image: Image.Image, cam: np.ndarray, alpha: float = 0.4) -> 
     cam_img = Image.fromarray((cam * 255).astype(np.uint8)).resize(
         image.size, Image.Resampling.BICUBIC)
     cam_up = np.asarray(cam_img, dtype=np.float32) / 255.0
-    colour = _jet(cam_up).astype(np.float32)
+    color = _jet(cam_up).astype(np.float32)
     base = np.asarray(image, dtype=np.float32)
     # Blend more strongly where activation is high; keep cold regions readable.
     a = (alpha * (0.3 + 0.7 * cam_up))[..., None]
-    out = base * (1 - a) + colour * a
+    out = base * (1 - a) + color * a
     return Image.fromarray(out.clip(0, 255).astype(np.uint8))

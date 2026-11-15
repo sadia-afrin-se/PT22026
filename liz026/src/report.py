@@ -1,4 +1,4 @@
-"""Generates a downloadable HTML report for each analysed X-ray."""
+"""Generates a downloadable HTML report for each analyzed X-ray."""
 import base64
 import datetime as dt
 import html
@@ -28,7 +28,7 @@ def build_report(patient_name: str, label: str, prob_pneumonia: float,
     now = dt.datetime.now()
     name = patient_name.strip() or "Anonymous"
     confidence = prob_pneumonia if label == "Pneumonia" else 1 - prob_pneumonia
-    colour = "#c0392b" if label == "Pneumonia" else "#1e8449"
+    color = "#c0392b" if label == "Pneumonia" else "#1e8449"
     warn_html = "".join(f"<li>{html.escape(w)}</li>" for w in warnings)
 
     doc = f"""<!DOCTYPE html>
@@ -37,7 +37,7 @@ def build_report(patient_name: str, label: str, prob_pneumonia: float,
  body{{font-family:Arial,sans-serif;max-width:820px;margin:30px auto;color:#222}}
  h1{{border-bottom:2px solid #333;padding-bottom:6px}}
  table{{border-collapse:collapse;margin:12px 0}} td{{padding:6px 14px;border:1px solid #ccc}}
- .result{{font-size:22px;font-weight:bold;color:{colour}}}
+ .result{{font-size:22px;font-weight:bold;color:{color}}}
  .imgs{{display:flex;gap:16px}} .imgs figure{{margin:0;text-align:center}}
  .imgs img{{width:360px;border:1px solid #999}}
  .note{{font-size:12px;color:#666;margin-top:24px}}

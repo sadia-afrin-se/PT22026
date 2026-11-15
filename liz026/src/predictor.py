@@ -58,7 +58,7 @@ def _threshold_warnings(prob: float, threshold: float, label: str) -> list[str]:
     return warnings
 
 
-def analyse(image: Image.Image, threshold: float = config.DEFAULT_THRESHOLD) -> Prediction:
+def analyze(image: Image.Image, threshold: float = config.DEFAULT_THRESHOLD) -> Prediction:
     """Run the full pipeline on one PIL image."""
     warnings = validate_image(image)          # may raise InvalidImageError
     start = time.perf_counter()

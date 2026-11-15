@@ -32,11 +32,11 @@ trusting the result.
 | Step | What happens |
 |---|---|
 | **1 · Upload** | Drag and drop, browse, or paste a chest X-ray (JPG/PNG), or click one of the example images. **Analysis starts automatically**; no button press needed. |
-| **2 · Result** | A colour-coded result card: green ✅ **Normal** or red ⚠️ **Pneumonia**, a confidence bar, P(Pneumonia), the threshold used, and the processing time. |
-| **🔥 Heat-map tab** | An interactive **before/after slider**: drag the handle to compare the original X-ray with the Grad-CAM overlay. A colour legend explains low → high influence. |
+| **2 · Result** | A color-coded result card: green ✅ **Normal** or red ⚠️ **Pneumonia**, a confidence bar, P(Pneumonia), the threshold used, and the processing time. |
+| **🔥 Heat-map tab** | An interactive **before/after slider**: drag the handle to compare the original X-ray with the Grad-CAM overlay. A color legend explains low → high influence. |
 | **📊 Probabilities tab** | Probability bars for both classes. |
 | **📄 Report tab** | Download a self-contained **HTML report** with the X-ray, heat-map, result and disclaimer (open in any browser or print to PDF). |
-| **🕘 History tab** | A table of every X-ray analysed in the session, with a *Clear history* button. |
+| **🕘 History tab** | A table of every X-ray analyzed in the session, with a *Clear history* button. |
 | **ℹ️ About tab** | Model architecture, how Grad-CAM works, what the threshold means, and limitations. |
 
 ### Extra controls and safety checks
@@ -44,7 +44,7 @@ trusting the result.
   pneumonia cases (higher sensitivity); raise it to reduce false alarms (higher specificity).
   The result updates as soon as you release the slider.
 * **Input validation:** images smaller than 64 × 64 are rejected. Warnings are shown for
-  colour photos (probably not an X-ray), unusual aspect ratios, scores close to the decision
+  color photos (probably not an X-ray), unusual aspect ratios, scores close to the decision
   threshold (0.35–0.65 at the default 0.5), and cases where a high or low threshold overrides
   the way the model is leaning.
 * **16-bit images:** 16-bit grayscale PNGs (common for raw X-ray exports) are rescaled to 8-bit
@@ -68,7 +68,7 @@ and **reuses its pretrained model weights**. All application code was rewritten 
 |---|---|---|
 | Prediction (Normal / Pneumonia) | ✅ | ✅ |
 | Explainability | ❌ | ✅ Grad-CAM with before/after slider |
-| How results are shown | raw JSON text | colour-coded result card + confidence bar + probability chart |
+| How results are shown | raw JSON text | color-coded result card + confidence bar + probability chart |
 | Starting an analysis | button only | automatic on upload / example / threshold change |
 | Decision threshold | fixed 0.5 | adjustable slider |
 | Input validation and warnings | ❌ | ✅ |
@@ -77,7 +77,7 @@ and **reuses its pretrained model weights**. All application code was rewritten 
 | Code structure | single script | modular package (`src/`) |
 | Evaluation script (accuracy, precision, recall, F1, ROC-AUC, confusion matrix) | ❌ | ✅ `scripts/evaluate.py` |
 | Model weights in Git | committed (13 MB) | downloaded automatically on first run |
-| Python 3.14 / 3.15 support | ❌ (needs TensorFlow) | ✅ Keras 3 on the PyTorch backend |
+| Runs without TensorFlow | ❌ (needs TensorFlow) | ✅ Keras 3 on the PyTorch backend |
 
 ## 4. Model
 
@@ -87,10 +87,10 @@ and **reuses its pretrained model weights**. All application code was rewritten 
 * **Input:** 224 × 224 × 3 RGB image, pixel values scaled to [0, 1].
 * **Output:** P(Pneumonia) between 0 and 1. The label is *Pneumonia* if P ≥ threshold
   (default 0.5).
-* **Framework:** Keras 3 running on the **PyTorch** backend. TensorFlow has no wheels for
-  Python 3.14+, while PyTorch does; the same `.keras` weights load unchanged.
+* **Framework:** Keras 3 running on the **PyTorch** backend. TensorFlow is not needed
+  (a TensorFlow code path is kept for anyone who prefers it); the same `.keras` weights load unchanged.
 * **Training data:** [Chest X-Ray Images (Pneumonia)](https://www.kaggle.com/datasets/paultimothymooney/chest-xray-pneumonia)
-  (Kermany et al., 2018): 5,856 paediatric chest X-rays (ages 1–5) from Guangzhou Women and
+  (Kermany et al., 2018): 5,856 pediatric chest X-rays (ages 1–5) from Guangzhou Women and
   Children's Medical Center. Training notebook by the original author:
   [Kaggle – Chest-Xray-Vision-98](https://www.kaggle.com/code/yousseftaha98/chest-xray-vision-98).
 
@@ -101,8 +101,8 @@ and **reuses its pretrained model weights**. All application code was rewritten 
    logit instead of the probability keeps the map informative even when the model is 100 %
    confident, because the sigmoid's gradient vanishes there.)
 3. Gradients are averaged per map to give one weight per channel; the weighted sum of the maps,
-   passed through ReLU and normalised, gives a 7 × 7 relevance map.
-4. The map is upsampled to the image size and blended over the X-ray with a jet colour map
+   passed through ReLU and normalized, gives a 7 × 7 relevance map.
+4. The map is upsampled to the image size and blended over the X-ray with a jet color map
    (blue = low, red = high influence). For a *Normal* prediction the negative logit is
    explained, so the map always shows evidence for the predicted class.
 
@@ -128,7 +128,7 @@ liz026/
 │   ├── predictor.py        # full inference pipeline (validate → predict → explain)
 │   └── report.py           # HTML report generation
 ├── scripts/
-│   └── evaluate.py         # metrics on a labelled test set
+│   └── evaluate.py         # metrics on a labeled test set
 ├── examples/               # two sample X-rays (Normal, Pneumonia) from the Kaggle test set
 ├── docs/
 │   └── screenshot.png      # screenshot used in this README
@@ -140,7 +140,7 @@ liz026/
 
 ## 6. Installation
 
-Requires Python 3.10 or newer (tested on Python 3.12).
+Developed and tested on Python 3.12.
 
 ```bash
 git clone https://github.com/xahiru/PT22026.git

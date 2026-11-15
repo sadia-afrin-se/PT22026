@@ -1,5 +1,5 @@
 """
-Evaluate the pretrained model on a labelled test set.
+Evaluate the pretrained model on a labeled test set.
 
 Expected folder layout (as in the Kaggle "Chest X-Ray Images (Pneumonia)"
 dataset, https://www.kaggle.com/datasets/paultimothymooney/chest-xray-pneumonia):
@@ -100,7 +100,7 @@ def save_plots(out_dir, m, fpr, tpr, auc):
     fig.tight_layout(); fig.savefig(out_dir / "confusion_matrix.png", dpi=150); plt.close(fig)
 
     fig, ax = plt.subplots(figsize=(4.5, 4))
-    ax.plot(fpr, tpr, label=f"AUC = {auc:.3f}"); ax.plot([0, 1], [0, 1], "--", color="grey")
+    ax.plot(fpr, tpr, label=f"AUC = {auc:.3f}"); ax.plot([0, 1], [0, 1], "--", color="gray")
     ax.set_xlabel("False positive rate"); ax.set_ylabel("True positive rate")
     ax.set_title("ROC curve"); ax.legend(loc="lower right")
     fig.tight_layout(); fig.savefig(out_dir / "roc_curve.png", dpi=150); plt.close(fig)

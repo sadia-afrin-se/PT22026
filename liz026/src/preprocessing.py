@@ -48,12 +48,12 @@ def validate_image(image: Image.Image) -> list[str]:
 
     warnings = []
     rgb = np.asarray(to_rgb(image), dtype=np.float32)
-    # X-rays are greyscale: R, G and B channels are (almost) equal.
-    colour = (np.abs(rgb[..., 0] - rgb[..., 1]).mean() +
+    # X-rays are grayscale: R, G and B channels are (almost) equal.
+    color = (np.abs(rgb[..., 0] - rgb[..., 1]).mean() +
               np.abs(rgb[..., 1] - rgb[..., 2]).mean()) / 2
-    if colour > config.MAX_COLOR_DEVIATION:
+    if color > config.MAX_COLOR_DEVIATION:
         warnings.append(
-            "This image looks like a colour photo, not a chest X-ray. "
+            "This image looks like a color photo, not a chest X-ray. "
             "The prediction is probably meaningless."
         )
     aspect = max(w, h) / min(w, h)

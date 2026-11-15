@@ -18,7 +18,7 @@ from src import config  # must come first: selects the Keras backend
 import gradio as gr
 
 from src.model_loader import get_model
-from src.predictor import analyse
+from src.predictor import analyze
 from src.preprocessing import InvalidImageError
 from src.report import build_report
 
@@ -64,7 +64,7 @@ CSS = """
   background: #4338ca; color: #fff; align-items: center; justify-content: center;
   font-size: 14px; margin-right: 8px;}
 .step-sub {font-size: 14px; color: var(--body-text-color-subdued); margin: 0 0 6px;}
-#analyse-btn {font-size: 17px; font-weight: 700; min-height: 50px;}
+#analyze-btn {font-size: 17px; font-weight: 700; min-height: 50px;}
 
 /* ---------- result card ---------- */
 .result {border-radius: 16px; padding: 18px 20px; border: 2px solid;}
@@ -124,7 +124,7 @@ HERO_HTML = """
 EMPTY_RESULT_HTML = """
 <div class="empty">
   <div class="big">🫁</div>
-  <p style="font-size:17px;margin:6px 0 2px;"><b>No X-ray analysed yet</b></p>
+  <p style="font-size:17px;margin:6px 0 2px;"><b>No X-ray analyzed yet</b></p>
   <p style="margin:0;">Upload a chest X-ray or click an example on the left.<br>
   The analysis starts automatically.</p>
 </div>
@@ -141,7 +141,7 @@ Grad-CAM heat-map. Red areas influenced the decision most.</p>
 #  Callbacks                                                                  #
 # --------------------------------------------------------------------------- #
 def _result_html(pred) -> str:
-    """Coloured result card shown after each analysis."""
+    """Colored result card shown after each analysis."""
     is_pn = pred.label == "Pneumonia"
     css_class = "pneumonia" if is_pn else "normal"
     icon = "⚠️" if is_pn else "✅"
@@ -172,13 +172,13 @@ def _result_html(pred) -> str:
 
 
 def run_analysis(image, patient_name, threshold, history):
-    """Analyse one image. Returns result card, probabilities, comparison, report, history."""
+    """Analyze one image. Returns result card, probabilities, comparison, report, history."""
     history = history or []
     if image is None:
         # Image was removed: reset outputs quietly instead of showing an error.
         return EMPTY_RESULT_HTML, None, None, None, history, history
     try:
-        pred = analyse(image, threshold)
+        pred = analyze(image, threshold)
     except InvalidImageError as exc:
         raise gr.Error(str(exc))
     except Exception as exc:  # model missing, download failure, etc.
@@ -207,7 +207,7 @@ ABOUT_MD = """
 * **Architecture:** MobileNetV2 (ImageNet-pretrained) backbone → Global Average Pooling →
   BatchNorm → Dropout(0.45) → Dense(ReLU) → Dropout(0.25) → Dense(ReLU) → Dense(1, sigmoid).
 * **Task:** binary classification, *Normal* vs *Pneumonia*.
-* **Training data:** Kaggle *Chest X-Ray Images (Pneumonia)* (Kermany et al., 2018), paediatric
+* **Training data:** Kaggle *Chest X-Ray Images (Pneumonia)* (Kermany et al., 2018), pediatric
   chest X-rays from Guangzhou Women and Children's Medical Center.
 * **Weights:** pretrained model from the open-source project
   [Xray-Analysis-using-CNN-and-gradio-deployment](https://github.com/Youssefx64/Xray-Analysis-using-CNN-and-gradio-deployment).
@@ -216,7 +216,7 @@ ABOUT_MD = """
 1. The X-ray passes through MobileNetV2, producing 1,280 feature maps of size 7 × 7.
 2. We compute how much the pneumonia score changes with each feature map (its gradient).
 3. Feature maps are weighted by these gradients and summed → a 7 × 7 relevance map.
-4. The map is enlarged and coloured over the X-ray: **red = most influential**.
+4. The map is enlarged and colored over the X-ray: **red = most influential**.
 
 ### 🎚️ Decision threshold
 The model outputs P(Pneumonia) between 0 and 1. If it is ≥ the threshold, the result is
@@ -224,7 +224,7 @@ The model outputs P(Pneumonia) between 0 and 1. If it is ≥ the threshold, the 
 **raise** it to reduce false alarms (higher specificity, more missed cases).
 
 ### ⚠️ Limitations
-Trained on one hospital's paediatric images; performance on adult or other-scanner images is
+Trained on one hospital's pediatric images; performance on adult or other-scanner images is
 unknown. It cannot tell bacterial from viral pneumonia, nor detect other diseases.
 Grad-CAM is a coarse 7 × 7 explanation, and it sometimes highlights shoulders or text markers,
 showing the model may partly rely on non-lung cues. **Not a medical device – educational use only.**
@@ -243,8 +243,8 @@ def build_ui() -> gr.Blocks:
         gr.HTML(HERO_HTML)
 
         with gr.Tabs():
-            # ============================ Analyse tab ============================
-            with gr.Tab("🔍 Analyse"):
+            # ============================ Analyze tab ============================
+            with gr.Tab("🔍 Analyze"):
                 with gr.Row(equal_height=False):
                     # ---------------- left: input ----------------
                     with gr.Column(scale=5, elem_classes="card"):
@@ -267,8 +267,8 @@ def build_ui() -> gr.Blocks:
                                      "(0.99 gave the best balance on the Kaggle test set)")
                         with gr.Row():
                             clear_btn = gr.Button("🗑️ Clear", variant="secondary", scale=1)
-                            analyse_btn = gr.Button("🔍 Analyse X-ray", variant="primary",
-                                                    scale=2, elem_id="analyse-btn")
+                            analyze_btn = gr.Button("🔍 Analyze X-ray", variant="primary",
+                                                    scale=2, elem_id="analyze-btn")
 
                     # ---------------- right: output ----------------
                     with gr.Column(scale=6, elem_classes="card"):
@@ -291,7 +291,7 @@ def build_ui() -> gr.Blocks:
 
             # ============================ History tab ============================
             with gr.Tab("🕘 History"):
-                gr.HTML('<p class="step-sub">All X-rays analysed in this session.</p>')
+                gr.HTML('<p class="step-sub">All X-rays analyzed in this session.</p>')
                 history_out = gr.Dataframe(headers=HISTORY_HEADERS, interactive=False,
                                            wrap=True)
                 clear_hist_btn = gr.Button("Clear history", size="sm")
@@ -307,7 +307,7 @@ def build_ui() -> gr.Blocks:
         inputs = [image_in, patient_in, threshold_in, history_state]
         outputs = [result_out, probs_out, compare_out, report_out, history_out, history_state]
 
-        analyse_btn.click(run_analysis, inputs, outputs)
+        analyze_btn.click(run_analysis, inputs, outputs)
         image_in.change(run_analysis, inputs, outputs)      # auto-run on upload / example / paste
         threshold_in.release(run_analysis, inputs, outputs)  # re-run when threshold changes
         clear_btn.click(clear_all, outputs=[image_in, patient_in, threshold_in, result_out,
