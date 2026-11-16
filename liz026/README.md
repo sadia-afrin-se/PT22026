@@ -132,6 +132,7 @@ liz026/
 ├── examples/               # two sample X-rays (Normal, Pneumonia) from the Kaggle test set
 ├── docs/
 │   └── screenshot.png      # screenshot used in this README
+├── results/                # evaluation output on the Kaggle test set (see section 8)
 ├── model/                  # model file is downloaded here (git-ignored)
 ├── reports/                # generated HTML reports (git-ignored)
 ├── ChestCAM_Mid_Technical_Report.docx   # project report
@@ -195,6 +196,28 @@ This writes the following to `results/`:
 * `threshold_sweep.csv`: the same metrics for thresholds 0.05 … 0.95, plus 0.98, 0.99, 0.995 and 0.999
 * `predictions.csv`: per-image probability
 * `confusion_matrix.png` and `roc_curve.png`
+
+### Results on the Kaggle test set
+
+The output of running the script on the official Kaggle test set (624 images: 234 Normal, 390 Pneumonia)
+with Python 3.12 is committed in [`results/`](results/).
+
+| Metric | Threshold 0.5 (default) | Threshold 0.99 |
+|---|---|---|
+| Accuracy | 74.7% | 88.5% |
+| Precision | 71.2% | 88.6% |
+| Recall (sensitivity) | 100% | 93.6% |
+| Specificity | 32.5% | 79.9% |
+| F1 | 0.832 | 0.910 |
+| ROC-AUC | 0.954 | 0.954 |
+
+| ROC curve | Confusion matrix (threshold 0.5) |
+|---|---|
+| ![ROC curve](results/roc_curve.png) | ![Confusion matrix](results/confusion_matrix.png) |
+
+The model ranks images well (ROC-AUC 0.954) and misses no pneumonia case at the default threshold, but it
+labels 158 of the 234 normal X-rays as pneumonia. A threshold near 0.99 gives a much better balance. That
+threshold was chosen by looking at the test set itself, so its figures are optimistic.
 
 ## 9. Technologies
 
