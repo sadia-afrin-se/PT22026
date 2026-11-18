@@ -211,9 +211,9 @@ with Python 3.12 is committed in [`results/`](results/).
 | F1 | 0.832 | 0.910 |
 | ROC-AUC | 0.954 | 0.954 |
 
-| ROC curve | Confusion matrix (threshold 0.5) |
-|---|---|
-| ![ROC curve](results/roc_curve.png) | ![Confusion matrix](results/confusion_matrix.png) |
+![ROC curve](results/roc_curve.png)
+
+![Confusion matrices at thresholds 0.5 and 0.99](results/confusion_matrix.png)
 
 The model ranks images well (ROC-AUC 0.954) and misses no pneumonia case at the default threshold, but it
 labels 158 of the 234 normal X-rays as pneumonia. A threshold near 0.99 gives a much better balance. That
